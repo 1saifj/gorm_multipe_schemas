@@ -1,13 +1,4 @@
----
-title: Managing Multiple Database Schemas with Gorm
-description: This tutorial will guide you through the process of handling multiple database schemas using Gorm in one connection
-createdAt: 2023-07-09
-updatedAt: 2023-07-09
-tags:
-  - golang
-  - gorm
-  - database
----
+
 
 # Introduction
 
