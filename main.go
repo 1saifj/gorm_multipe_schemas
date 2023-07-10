@@ -35,20 +35,6 @@ func (Order) TableName() string {
 	return AppSchema + ".order"
 }
 
-// AuthScope is a custom scope for the auth schema
-func AuthScope() func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Table("auth.user")
-	}
-}
-
-// AppScope is a custom scope for the app schema
-func AppScope() func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Table("app.order")
-	}
-}
-
 func main() {
 	// Connect to the database
 	db, err := gorm.Open(postgres.Open("host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Jakarta"), &gorm.Config{})
@@ -68,24 +54,24 @@ func main() {
 
 	// Create a new user in the auth schema
 	user := User{Name: "John"}
-	db.Scopes(AuthScope()).Create(&user)
+	db.Create(&user)
 
 	// Create a new order associated with the user in the app schema
 	order := Order{Name: "Order 1", UserID: user.ID}
-	db.Scopes(AppScope()).Create(&order)
+	db.Create(&order)
 
 	// Fetch all users from the auth schema
 	var authUsers []User
-	db.Scopes(AuthScope()).Find(&authUsers)
+	db.Find(&authUsers)
 	fmt.Println("Auth Users:", authUsers)
 
 	// Fetch all orders from the app schema
 	var appOrders []Order
-	db.Scopes(AppScope()).Find(&appOrders)
+	db.Find(&appOrders)
 	fmt.Println("App Orders:", appOrders)
 
 	// Fetch all orders from the app schema with the associated user
 	var appOrdersWithUser []Order
-	db.Scopes(AppScope()).Preload(clause.Associations).Find(&appOrdersWithUser)
+	db.Preload(clause.Associations).Find(&appOrdersWithUser)
 	fmt.Println("App Orders with User:", appOrdersWithUser)
 }
